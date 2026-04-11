@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Music Panel</title>
-</head>
-<body>
-
 <h1>🎵 PANEL</h1>
 
-<p id="song">Loading...</p>
+<h2 id="song">loading...</h2>
 
 <button onclick="skip()">⏭ SKIP</button>
 
@@ -15,9 +8,9 @@
 const VPS = "http://92.5.53.139:3000";
 
 async function load() {
-  const res = await fetch(VPS + "/state");
-  const data = await res.json();
-  document.getElementById("song").innerText = data.currentSong || "none";
+  const r = await fetch(VPS + "/state");
+  const d = await r.json();
+  document.getElementById("song").innerText = d.song;
 }
 
 async function skip() {
@@ -27,6 +20,3 @@ async function skip() {
 setInterval(load, 2000);
 load();
 </script>
-
-</body>
-</html>
