@@ -1,1 +1,127 @@
 
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Status Bota</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      width: 320px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .status {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
+    .online {
+      color: #22c55e;
+    }
+
+    .offline {
+      color: #ef4444;
+    }
+
+    .song {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #cbd5f5;
+    }
+
+    .refresh {
+      margin-top: 20px;
+      padding: 10px 15px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .refresh:hover {
+      background: #2563eb;
+    }
+  </style>
+
+</head>
+<body>
+
+<div class="card">
+  <h1>🤖 Status Bota</h1>
+
+  <div id="status" class="status">Ładowanie...</div>
+  <div id="song" class="song"></div>
+
+<button class="refresh" onclick="loadStatus()">Odśwież</button>
+
+</div>
+
+<script>
+  const API_URL = "http://152.70.18.96:3000/status"; // <-- zmień jeśli trzeba
+
+  async function loadStatus() {
+    const statusEl = document.getElementById("status");
+    const songEl = document.getElementById("song");
+
+    statusEl.innerText = "Sprawdzanie...";
+    statusEl.className = "status";
+
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+
+      if (data.status === "idle") {
+        statusEl.innerText = "🟢 Online (idle)";
+        statusEl.classList.add("online");
+      } else if (data.status === "playing") {
+        statusEl.innerText = "🎵 Gra muzyka";
+        statusEl.classList.add("online");
+      } else {
+        statusEl.innerText = "⚠️ Nieznany status";
+      }
+
+      if (data.song) {
+        songEl.innerText = "Teraz gra: " + data.song;
+      } else {
+        songEl.innerText = "Brak muzyki";
+      }
+
+    } catch (err) {
+      statusEl.innerText = "🔴 Offline";
+      statusEl.classList.add("offline");
+      songEl.innerText = "";
+    }
+  }
+
+  // auto load
+  loadStatus();
+
+  // auto refresh co 10s
+  setInterval(loadStatus, 10000);
+</script>
+
+</body>
+</html>
